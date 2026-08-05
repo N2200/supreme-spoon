@@ -1,9 +1,9 @@
 import paho.mqtt.client as mqtt
-
+from . import config
 
 class MQTTClient:
 
-    def __init__(self, broker="localhost", port=1883):
+    def __init__(self, broker=config.MQTT_BROKER, port=config.MQTT_PORT):
         self.handlers = []
 
         self.client = mqtt.Client()
