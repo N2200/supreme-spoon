@@ -1,0 +1,6 @@
+MQTT_BROKER = "localhost"
+MQTT_PORT = 1883
+
+CLIENT_ID = "server"
+
+KEEPALIVE = 60
