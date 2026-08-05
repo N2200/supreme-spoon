@@ -1,24 +1,24 @@
-from mqtt.client import MQTTClient
-from mqtt.handlers import device_announced
-from mqtt import topics
 import time
 
-mqtt = MQTTClient()
+from mqtt.client import MQTTClient
+from games.laser_tag import topics
+from games.laser_tag.game_server import GameServer
 
-mqtt.add_handler(
-    topics.DISCOVERY,
-    device_announced
-)
+mqtt = MQTTClient()
+game = GameServer(mqtt)
+mqtt.add_handler(game.on_message)
 
 mqtt.connect()
 
-mqtt.subscribe(topics.DISCOVERY)
+
+for topic in topics.SUBSCRIPTIONS:
+    mqtt.subscribe(topic)
 
 print("Server running")
-
 
 try:
     while True:
         time.sleep(1)
+
 except KeyboardInterrupt:
     mqtt.disconnect()

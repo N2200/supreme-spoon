@@ -1,70 +1,60 @@
-import json
 import paho.mqtt.client as mqtt
-
-from . import config
 
 
 class MQTTClient:
 
-    def __init__(self):
+    def __init__(self, broker="localhost", port=1883):
+        self.handlers = []
 
-        self.client = mqtt.Client(
-            mqtt.CallbackAPIVersion.VERSION2,
-            client_id=config.CLIENT_ID
-        )
+        self.client = mqtt.Client()
 
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
-        self.client.on_disconnect = self.on_disconnect
+        self.client.on_message = self._message_received
 
-        self.handlers = {}
+        self.broker = broker
+        self.port = port
+
 
     def connect(self):
+        print("Connecting to MQTT broker...")
 
         self.client.connect(
-            config.MQTT_BROKER,
-            config.MQTT_PORT,
-            config.KEEPALIVE
+            self.broker,
+            self.port
         )
 
         self.client.loop_start()
 
-    def disconnect(self):
 
+    def disconnect(self):
         self.client.loop_stop()
         self.client.disconnect()
 
-    def subscribe(self, topic):
 
+    def subscribe(self, topic):
+        print("Subscribing:", topic)
         self.client.subscribe(topic)
 
-    def publish(self, topic, payload, retain=False, qos=0):
 
-        self.client.publish(
+    def publish(self, topic, payload):
+        self.client.publish(topic, payload)
+
+
+    def add_handler(self, handler):
+        self.handlers.append(handler)
+
+
+    def _message_received(self, client, userdata, msg):
+
+        topic = msg.topic
+        payload = msg.payload.decode()
+
+        self.on_message(
             topic,
-            json.dumps(payload),
-            qos=qos,
-            retain=retain
+            payload
         )
 
-    def add_handler(self, topic, callback):
 
-        self.handlers[topic] = callback
+    def on_message(self, topic, payload):
 
-    def on_connect(self, client, userdata, flags, reason_code, properties):
-
-        print("Connected")
-
-    def on_disconnect(self, client, userdata, flags, reason_code, properties):
-
-        print("Disconnected")
-
-    def on_message(self, client, userdata, msg):
-
-        payload = json.loads(msg.payload.decode())
-
-        print(msg.topic)
-        print(payload)
-
-        if msg.topic in self.handlers:
-            self.handlers[msg.topic](payload)
+        for handler in self.handlers:
+            handler(topic, payload)
