@@ -35,8 +35,11 @@ class MQTTClient:
         self.client.subscribe(topic)
 
 
-    def publish(self, topic, payload):
+    def publish(self,device_name, topic, payload):
+        topic = topic.replace("+", device_name)
         self.client.publish(topic, payload)
+    
+    
 
 
     def add_handler(self, handler):

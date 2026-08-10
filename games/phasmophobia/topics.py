@@ -1,4 +1,4 @@
-ROOT = "room"
+ROOT = "phasmophobia"
 
 DISCOVERY = f"{ROOT}/device/+/announce"
 HEARTBEAT = f"{ROOT}/device/+/heartbeat"
