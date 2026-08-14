@@ -1,0 +1,6 @@
+class HauntingManager:
+    def trigger_haunt(self, target_device_id):
+        self.event_bus.emit("haunt_triggered", {
+            "device_id": target_device_id,
+            "effect": "flicker"
+        })

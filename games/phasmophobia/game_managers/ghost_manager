@@ -1,0 +1,11 @@
+class GhostManager:
+    def __init__(self, event_bus):
+        self.event_bus = event_bus
+        self.type = None
+        self.room = None
+        self.evidence = []
+        self.hunt_ready = False
+
+    def choose_ghost(self, ghost_type): ...
+    def update_room(self, room_name): ...
+    def trigger_event(self, event_name): ...

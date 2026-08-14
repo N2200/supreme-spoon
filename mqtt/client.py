@@ -1,4 +1,7 @@
+from xml.sax import handler
+
 import paho.mqtt.client as mqtt
+import json
 from . import config
 
 class MQTTClient:
@@ -39,12 +42,6 @@ class MQTTClient:
         topic = topic.replace("+", device_name)
         self.client.publish(topic, payload)
     
-    
-
-
-    def add_handler(self, handler):
-        self.handlers.append(handler)
-
 
     def _message_received(self, client, userdata, msg):
 
@@ -61,3 +58,6 @@ class MQTTClient:
 
         for handler in self.handlers:
             handler(topic, payload)
+
+    def add_handler(self, handler):
+        self.handlers.append(handler)

@@ -1,26 +1,23 @@
 import time
 
-from mqtt.client import MQTTClient
-from games.phasmophobia import topics
-from games.phasmophobia.game_server import GameServer
-
-name = "ghost-meter"
-mqtt = MQTTClient()
-game = GameServer(mqtt)
-mqtt.add_handler(game.on_message)
-
-mqtt.connect()
+from games.phasmophobia.device_logic import Device
 
 
-for topic in topics.SUBSCRIPTIONS:
-    mqtt.subscribe(topic)
+device = Device("ghost-meter")
 
-print("Device running")
+device.connect()
+print(f"{device.name} online")
+
+heartbeat_message = {
+  "type": "heartbeat",
+  "device_id": "ghost-meter-01",
+  "room": "hallway"
+}
 
 try:
     while True:
-        time.sleep(1)
-        mqtt.publish(name,topics.SUBSCRIPTIONS[0],"Hello World")
+         time.sleep(5)
+         device.heartbeat(heartbeat_message)
 
 except KeyboardInterrupt:
-    mqtt.disconnect()
+    device.disconnect()

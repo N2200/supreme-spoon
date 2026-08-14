@@ -1,0 +1,18 @@
+class HuntManager:
+    def __init__(self, ghost_manager, timers, event_bus):
+        self.ghost = ghost_manager
+        self.timers = timers
+        self.event_bus = event_bus
+        self.active = False
+
+    def maybe_start_hunt(self):
+        if self.ghost.hunt_ready:
+            self.active = True
+            self.timers.start("hunt", 30)
+            self.event_bus.emit("hunt_started", {"duration": 30})
+
+    def tick(self, dt):
+        if self.active:
+            self.timers.tick(dt)
+            if self.timers.is_expired("hunt"):
+                self.stop_hunt()
