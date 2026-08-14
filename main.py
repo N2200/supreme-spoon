@@ -19,6 +19,7 @@ print("Server running")
 try:
     while True:
         time.sleep(1)
+        game.send_announcement("TEST")
 
 except KeyboardInterrupt:
     mqtt.disconnect()

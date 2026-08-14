@@ -14,7 +14,7 @@ SUBSCRIPTIONS = [
 
 # Topics published by server (server -> device)
 SERVER_COMMANDS = f"{ROOT}/server/+/commands"
-SERVER_ANNOUNCE = f"{ROOT}/server/+/announce"
+SERVER_ANNOUNCE = f"{ROOT}/server/announce"
 # Topics devices should subscribe to (server -> device)
 DEVICE_SUBSCRIPTIONS = [
     SERVER_COMMANDS,
